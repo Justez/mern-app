@@ -8,6 +8,11 @@ export const setRecipes = recipes => ({
   payload: recipes
 })
 
+export const addRecipes = recipes => ({
+  type: 'ADD_RECIPES',
+  payload: recipes
+})
+
 export const selectRecipe = recipe => ({
   type: 'SET_RECIPE',
   payload: recipe

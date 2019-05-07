@@ -2,8 +2,6 @@ import { initState } from '../initState';
 import { selectRecipe } from '../actions/index';
 
 const todos = (state = initState, action) => {
-  console.log(action);
-  
   switch (action.type) {
     case 'SET_LOADING':
       return {
@@ -14,6 +12,11 @@ const todos = (state = initState, action) => {
       return {
         ...state,
         recipes: action.payload,
+      }
+    case 'ADD_RECIPES':
+      return {
+        ...state,
+        recipes: [...state.recipes, ...action.payload]
       }
     case 'SET_RECIPE': 
       return {
