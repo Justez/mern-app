@@ -45,8 +45,6 @@ class Main extends React.Component {
   render() {
     const { loading, recipes } = this.props;
     const { error, loadMore } = this.state;
-    console.log(recipes);
-    
 
     return (
       <div>
