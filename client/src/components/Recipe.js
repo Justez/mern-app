@@ -9,6 +9,7 @@ const Recipe = ({ clearRecipe, selectedRecipe: recipe }) => {
     return ( 
         <div>
             <Container fluid={true}>
+                <img src={recipe.image} />
                 <p>
                     {recipe.label}
                 </p>

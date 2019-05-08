@@ -18,9 +18,9 @@ class SearchBar extends React.Component {
 
     if (!loading) {
         setLoading(true);
-        axios.get(`https://api.edamam.com/search?q=${query}&app_id=7f1be035&app_key=10f1edf5f85e444cc7f11914251feaae`)
-        .then((response) => {
-            const recipes = response.data.hits;
+        axios.get(`/api/recipes/${query}/0`)
+        .then(({ data }) => {
+            const { recipes } = data;
             setRecipes(recipes);
         })
         .catch(error => console.error(error))

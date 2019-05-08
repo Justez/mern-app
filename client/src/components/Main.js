@@ -14,9 +14,9 @@ class Main extends React.Component {
       if (!this.props.recipes.length) {
         const { query } = this.props;
         this.props.setLoading(true);
-        axios.get(`https://api.edamam.com/search?q=${query}&app_id=7f1be035&app_key=10f1edf5f85e444cc7f11914251feaae`)
-        .then((response) => {
-          const recipes = response.data.hits;
+        axios.get(`/api/recipes/${query}/0`)
+        .then(({ data }) => {
+          const { recipes } = data;
           this.props.setRecipes(recipes);
           this.setState({ lastNode: recipes.length })
         })
@@ -32,11 +32,11 @@ class Main extends React.Component {
       const { lastNode } = this.state;
       
       this.setState({ loadMore: true });
-      axios.get(`https://api.edamam.com/search?q=${query}&from=${lastNode}&app_id=7f1be035&app_key=10f1edf5f85e444cc7f11914251feaae`)
+      axios.get(`/api/recipes/${query}/${lastNode}`)
       .then((response) => {
-        const recipes = response.data.hits;
+        const { data: { recipes } } = response;
         this.props.addRecipes(recipes);
-        this.setState(prevState => ({ lastNode: prevState + recipes.length }))
+        this.setState(prevState => ({ lastNode: prevState.lastNode + recipes.length }))
       })
       .catch(error => this.setState({ error: 'Unexpected error occured. Please try again later.'}))
       .finally(() => this.setState({ loadMore: false }))
@@ -45,6 +45,8 @@ class Main extends React.Component {
   render() {
     const { loading, recipes } = this.props;
     const { error, loadMore } = this.state;
+    console.log(recipes);
+    
 
     return (
       <div>
@@ -53,18 +55,21 @@ class Main extends React.Component {
           : <div>
             {recipes.length > 0 
               ? <div>
-                  {recipes.map(({ recipe }) => 
-                    <Container fluid={true} key={recipe.url}>
+                  {recipes.map(recipe => 
+                    <Container fluid={true} key={recipe.url} style={{ marginTop: '5vmin' }}>
+                      <img src={recipe.image} />
                       <div>
                         {recipe.label}
                       </div>
-                      <Button
-                        onClick={() => this.props.selectRecipe(recipe)}
-                        style={{ marginRight: '2vw' }}
-                      >
-                        View ingredients
-                      </Button>
-                      <Button color="primary" onClick={() => {window.open(recipe.url,'_blank')}}>View full recipe</Button>
+                      <div>
+                        <Button
+                          onClick={() => this.props.selectRecipe(recipe)}
+                          style={{ marginRight: '2vw' }}
+                        >
+                          View ingredients
+                        </Button>
+                        <Button color="primary" onClick={() => {window.open(recipe.url,'_blank')}}>View full recipe</Button>
+                      </div>
                     </Container>
                   )}
                   {loadMore 
