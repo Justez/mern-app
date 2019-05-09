@@ -15,9 +15,6 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 router.get('/recipes/:query/:from', function(req, res, next) {
   try {
     const { query, from } = req.params;
-    // (async function deleteRecipes() {
-    //   await db.collection("recipes").deleteMany({ "query": query });
-    // })();
     
     db.collection("recipes").find({ query: req.params.query }).skip(+req.params.from).limit(10).toArray(function(err, result) {
       if (err) throw err;
@@ -28,9 +25,7 @@ router.get('/recipes/:query/:from', function(req, res, next) {
           let existed = [];
           if (+req.params.from) { // add more
             existed = await db.collection("recipes").find({ query: req.params.query }, { uri: 1, ingredientLines: 0 }).limit(+req.params.from).toArray()
-            if (existed.length) {
-              existed = existed.map(e => e.uri)
-            }
+            existed = existed.map(e => e.uri)
           }
           // bulk upload
           let { status, recipes, error } = await apiFunctions.getRecipes(req.params.query, req.params.from)

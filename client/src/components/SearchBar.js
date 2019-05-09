@@ -6,7 +6,7 @@ import Appbar from 'muicss/lib/react/appbar';
 import Input from 'muicss/lib/react/input';
 import Button from 'muicss/lib/react/button';
 
-import { setLoading, setRecipes, setQuery } from '../redux/actions';
+import { setLoading, setRecipes, setQuery, clearRecipe } from '../redux/actions';
 
 class SearchBar extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -14,9 +14,10 @@ class SearchBar extends React.Component {
   }
 
   onSearchChange = () => {
-    const { loading, setLoading, setRecipes, query } = this.props;
+    const { loading, setLoading, setRecipes, query, clearRecipe } = this.props;
 
     if (!loading) {
+        clearRecipe();
         setLoading(true);
         axios.get(`/api/recipes/${query}/0`)
         .then(({ data }) => {
@@ -67,9 +68,10 @@ class SearchBar extends React.Component {
 const mapStateToProps = ({ app: { loading, query }}) => ({ loading, query });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+    clearRecipe: () => dispatch(clearRecipe()),
     setLoading: (value) => dispatch(setLoading(value)),
     setRecipes: (recipes) => dispatch(setRecipes(recipes)),
-    setQuery: (query) => dispatch(setQuery(query)),
+    setQuery: (query) => dispatch(setQuery(query))
 })
 
 const SearchBarConnected = connect(
