@@ -27,15 +27,21 @@ class Main extends React.Component {
       }
     }
 
+    componentDidUpdate(nextProps) {
+      if (nextProps.recipes.length < this.state.lastNode) {
+        this.setState({ lastNode: nextProps.recipes.length })
+      }
+    }
+
     handleLoadMore = () => {
-      const { query } = this.props;
+      const { query, addRecipes } = this.props;
       const { lastNode } = this.state;
       
       this.setState({ loadMore: true });
       axios.get(`/api/recipes/${query}/${lastNode}`)
       .then((response) => {
-        const { data: { recipes } } = response;
-        this.props.addRecipes(recipes);
+        const { data: { recipes }} = response;
+        addRecipes(recipes);
         this.setState(prevState => ({ lastNode: prevState.lastNode + recipes.length }))
       })
       .catch(error => this.setState({ error: 'Unexpected error occured. Please try again later.'}))
@@ -44,7 +50,7 @@ class Main extends React.Component {
 
   render() {
     const { loading, recipes } = this.props;
-    const { error, loadMore } = this.state;
+    const { error, loadMore, lastNode } = this.state;
 
     return (
       <div>
